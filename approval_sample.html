@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GUILTO — Client Approval Sample</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <style>
+    /* Approval Banner Overlay */
+    .approval-banner {
+      background: #4B2E20;
+      color: #F5C842;
+      text-align: center;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(245, 200, 66, 0.3);
+    }
+
+    .approval-banner span {
+      background: #F5C842;
+      color: #4B2E20;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<!-- APPROVAL SAMPLE BANNER -->
+<div class="approval-banner">
+  <span>Preview Sample</span>
+  GUILTO Brand & Design Concept — Prepared for Client Review & Approval
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     HEADER / NAVIGATION
+════════════════════════════════════════════════ -->
+<nav id="navbar" role="navigation" aria-label="Main navigation" style="top:42px;">
+  <a href="#" class="nav-logo guilto-badge" aria-label="GUILTO home">
+    <span class="guilto-wordmark">Guilt<sup>o</sup></span>
+    <span class="guilto-sub">EVERYDAY GUILT FREE</span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#about" class="nav-link">Brand Story</a></li>
+    <li><a href="#sample-products" class="nav-link">Sample Collection</a></li>
+    <li><a href="#usps" class="nav-link">USPs & Benefits</a></li>
+    <li><a href="#gifting" class="nav-link">Packaging & Gifting</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="#approval-section" class="btn btn-primary" style="padding:10px 22px;font-size:0.8rem;">Review & Approve</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     1. HERO CONCEPT
+════════════════════════════════════════════════ -->
+<section id="hero" aria-label="Hero Concept" style="padding-top:140px;">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Design Concept • Handcrafted • Sugar-Free
+        </div>
+
+        <h1 class="hero-h1">
+          Sweetness Without Sugar,
+          <em>Happiness Without Limits.</em>
+        </h1>
+
+        <p class="hero-subtitle">
+          Sample landing page showcase for GUILTO — premium handcrafted sugar-free sweets made with natural ingredients.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#sample-products" class="btn btn-primary">View Product Samples →</a>
+          <a href="#about" class="btn btn-outline">Our Brand Story</a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="hero-trust-item"><div class="hero-trust-icon">🌿</div> 100% Natural</div>
+          <div class="hero-trust-item"><div class="hero-trust-icon">💚</div> Diabetic Friendly</div>
+          <div class="hero-trust-item"><div class="hero-trust-icon">🏆</div> Premium Quality</div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-image-wrap">
+          <div class="hero-img-ring ring-1"></div>
+          <div class="hero-float-badge badge-top-right glass" style="background:rgba(255,253,248,0.85);">
+            <span>🍯</span> Zero Added Sugar
+          </div>
+          <div class="hero-image-frame">
+            <img src="images/hero_platter.png" alt="GUILTO Premium Platter" loading="eager" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     2. BRAND STORY SAMPLE
+════════════════════════════════════════════════ -->
+<section id="about" style="padding: 60px 0;">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image-wrap">
+        <div class="about-img-main">
+          <img src="images/about_artisan.png" alt="Craftsmanship" />
+        </div>
+      </div>
+      <div class="about-content">
+        <div class="section-tag">Brand Story</div>
+        <h2 class="section-title">Crafted Without <em>Compromise</em></h2>
+        <p class="section-subtitle">
+          GUILTO was founded on a simple promise: health should never mean deprivation. 
+          Every sweet is hand-formed with organic nuts, stevia, and monk fruit.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     3. SAMPLE PRODUCT RANGE FOR APPROVAL
+════════════════════════════════════════════════ -->
+<section id="sample-products" style="padding: 60px 0; background: var(--bg-cream);">
+  <div class="container">
+    <div class="products-header" style="text-align:center; flex-direction:column;">
+      <div class="section-tag" style="justify-content:center;">Sample Product Lineup</div>
+      <h2 class="section-title">Core Offerings Showcase</h2>
+      <p class="section-subtitle">Sample selection submitted for visual & packaging approval</p>
+    </div>
+
+    <div class="products-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      
+      <!-- Sample 1 -->
+      <article class="product-card">
+        <div class="product-card-image">
+          <img src="images/product_ladoo.png" alt="Besan Ladoo" />
+          <div class="product-card-badges"><span class="badge badge-gold">Hero Item</span></div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Besan Ladoo</h3>
+          <p class="product-desc">Stevia-sweetened gram flour ladoo with cardamom & roasted pistachios.</p>
+        </div>
+      </article>
+
+      <!-- Sample 2 -->
+      <article class="product-card">
+        <div class="product-card-image">
+          <img src="images/product_kaju_katli.png" alt="Kaju Katli" />
+          <div class="product-card-badges"><span class="badge badge-choc">Signature</span></div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Kaju Katli</h3>
+          <p class="product-desc">Pure cashew diamonds with real silver leaf and zero added sugar.</p>
+        </div>
+      </article>
+
+      <!-- Sample 3 -->
+      <article class="product-card">
+        <div class="product-card-image">
+          <img src="images/product_chocolate.png" alt="Dark Truffles" />
+          <div class="product-card-badges"><span class="badge badge-berry">Artisan</span></div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">85% Dark Cocoa Truffles</h3>
+          <p class="product-desc">Sugar-free dark chocolate truffles infused with hazelnut & rose.</p>
+        </div>
+      </article>
+
+      <!-- Sample 4 -->
+      <article class="product-card">
+        <div class="product-card-image">
+          <img src="images/product_barfi.png" alt="Pistachio Barfi" />
+          <div class="product-card-badges"><span class="badge badge-green">Festive</span></div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Pistachio Barfi Squares</h3>
+          <p class="product-desc">Rich pistachio fudge squares garnished with organic rose petals.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     4. APPROVAL SIGN-OFF SECTION
+════════════════════════════════════════════════ -->
+<section id="approval-section" style="padding: 80px 0; background: #4B2E20; color: #fff;">
+  <div class="container" style="max-width: 800px; text-align: center;">
+    <div class="guilto-badge guilto-badge--footer" style="margin: 0 auto 24px;">
+      <span class="guilto-wordmark">Guilt<sup>o</sup></span>
+      <span class="guilto-sub">EVERYDAY GUILT FREE</span>
+    </div>
+
+    <h2 class="section-title" style="color:#fff;">Client Approval & Feedback Sign-Off</h2>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 32px;">
+      Please review the brand identity, logo, typography, color palette, and layout structure presented in this sample.
+    </p>
+
+    <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 24px; border-radius: 16px; text-align: left;">
+      <h4 style="color:#F5C842; margin-bottom: 12px; font-size:1.1rem;">Approval Checklist</h4>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px; font-size:0.9rem; color:rgba(255,255,255,0.85);">
+        <li>✓ Brand Name & Oval Badge Logo Design (GUILTO)</li>
+        <li>✓ Color Palette (Rich Maroon #7B1E1E, Warm Ivory, Gold Accents)</li>
+        <li>✓ Typography & Section Layout Structure</li>
+        <li>✓ Sample Product Presentation & Visual Asset Styling</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<footer style="background: #2B211B; color: rgba(255,255,255,0.4); text-align: center; padding: 20px; font-size: 0.8rem;">
+  © 2025 GUILTO — Client Presentation & Design Approval Sample File
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- IMAGE SETUP: Copy PNG files from artifacts dir to /images/ folder, renaming as shown below:
+       hero_product_platter_*.png  → images/hero_platter.png
+       about_artisan_*.png         → images/about_artisan.png
+       gift_box_luxury_*.png       → images/gift_box.png
+       ingredients_flatlay_*.png   → images/ingredients.png
+       product_ladoo_*.png         → images/product_ladoo.png
+       product_kaju_katli_*.png    → images/product_kaju_katli.png
+       product_chocolate_*.png     → images/product_chocolate.png
+       product_barfi_*.png         → images/product_barfi.png
+  -->
+  <meta name="description" content="GUILTO — Premium handcrafted sugar-free sweets made with natural ingredients. Zero added sugar, diabetic-friendly, artisan Indian confectionery for healthy indulgence." />
+  <meta name="keywords" content="sugar-free sweets, diabetic friendly sweets, keto sweets, natural sweetener sweets, sugar free ladoo, sugar free kaju katli, healthy Indian sweets" />
+  <meta property="og:title" content="GUILTO — Sweetness Without Sugar" />
+  <meta property="og:description" content="Premium handcrafted sugar-free sweets made with natural ingredients, crafted for healthy living without compromising on taste." />
+  <meta property="og:type" content="website" />
+  <title>GUILTO — Sweetness Without Sugar, Happiness Without Limits</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/components.css" />
+
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<!-- Early image path resolver — runs synchronously before images load -->
+<script>
+window.__imgBase = 'C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/';
+window.__imgMap = {
+  'images/hero_platter.png':       __imgBase + 'hero_product_platter_1785343251852.png',
+  'images/about_artisan.png':      __imgBase + 'about_artisan_1785343263291.png',
+  'images/gift_box.png':           __imgBase + 'gift_box_luxury_1785343284720.png',
+  'images/ingredients.png':        __imgBase + 'ingredients_flatlay_1785343295959.png',
+  'images/product_ladoo.png':      __imgBase + 'product_ladoo_1785343306155.png',
+  'images/product_kaju_katli.png': __imgBase + 'product_kaju_katli_1785343317577.png',
+  'images/product_chocolate.png':  __imgBase + 'product_chocolate_1785343337676.png',
+  'images/product_barfi.png':      __imgBase + 'product_barfi_1785343346173.png',
+};
+// Override Image constructor to remap paths
+var _NativeImage = window.Image;
+window.Image = function(w,h) {
+  var img = new _NativeImage(w,h);
+  Object.defineProperty(img, 'src', {
+    set: function(v) { img.setAttribute('src', __imgMap[v] || v); },
+    get: function() { return img.getAttribute('src'); }
+  });
+  return img;
+};
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     CUSTOM CURSOR
+════════════════════════════════════════════════ -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<script>
+(function() {
+  var dot = document.getElementById('cursor-dot');
+  var ring = document.getElementById('cursor-ring');
+  if (!dot || !ring) return;
+
+  var mx = window.innerWidth / 2;
+  var my = window.innerHeight / 2;
+  var rx = mx, ry = my;
+
+  function updatePos(e) {
+    if (e && e.clientX !== undefined) {
+      mx = e.clientX;
+      my = e.clientY;
+    }
+  }
+
+  window.addEventListener('mousemove', updatePos, { capture: true, passive: true });
+  window.addEventListener('pointermove', updatePos, { capture: true, passive: true });
+  document.addEventListener('mousemove', updatePos, { capture: true, passive: true });
+
+  function render() {
+    dot.style.transform = 'translate3d(' + mx + 'px, ' + my + 'px, 0) translate(-50%, -50%)';
+    rx += (mx - rx) * 0.22;
+    ry += (my - ry) * 0.22;
+    ring.style.transform = 'translate3d(' + rx + 'px, ' + ry + 'px, 0) translate(-50%, -50%)';
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+
+  document.addEventListener('mouseover', function(e) {
+    if (e.target && e.target.closest && e.target.closest('a, button, [data-tilt], .product-card, .ingredient-card, .recipe-card, .bs-card, .masonry-item, .filter-btn, .gift-pack-card, input, select, textarea')) {
+      document.body.classList.add('cursor-hover');
+    } else {
+      document.body.classList.remove('cursor-hover');
+    }
+  });
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════
+     CART OVERLAY
+════════════════════════════════════════════════ -->
+<div class="cart-overlay" id="cart-overlay"></div>
+
+<!-- ═══════════════════════════════════════════════
+     CART DRAWER
+════════════════════════════════════════════════ -->
+<aside id="cart-drawer" role="complementary" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h2 class="cart-title">Your Cart 🛒</h2>
+    <button class="cart-close" id="cart-close-btn" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items-list">
+    <div class="cart-empty">
+      <div class="cart-empty-icon">🍬</div>
+      <p>Your cart is empty.<br/>Add some sweetness!</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price" id="cart-total">₹0</span>
+    </div>
+    <button class="checkout-btn" id="checkout-btn">Checkout →</button>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     TOAST
+════════════════════════════════════════════════ -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg">Added to cart!</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════ -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo guilto-badge" aria-label="GUILTO home">
+    <span class="guilto-wordmark">Guilt<sup>o</sup></span>
+    <span class="guilto-sub">EVERYDAY GUILT FREE</span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#about" class="nav-link">Our Story</a></li>
+    <li><a href="#ingredients" class="nav-link">Ingredients</a></li>
+    <li><a href="#products" class="nav-link">Products</a></li>
+    <li><a href="#benefits" class="nav-link">Benefits</a></li>
+    <li><a href="#giftbox" class="nav-link">Gift Boxes</a></li>
+    <li><a href="#recipes" class="nav-link">Recipes</a></li>
+    <li><a href="#contact" class="nav-link">Contact</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="nav-cart-btn" id="cart-open-btn" aria-label="Open cart">
+      🛒
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+    <a href="#products" class="btn btn-primary" style="padding:10px 22px;font-size:0.8rem;">Order Now</a>
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Nav Drawer -->
+<div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+  <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Close menu">✕</button>
+  <nav class="drawer-links">
+    <a href="#about">Our Story</a>
+    <a href="#ingredients">Ingredients</a>
+    <a href="#products">Products</a>
+    <a href="#benefits">Health Benefits</a>
+    <a href="#giftbox">Gift Boxes</a>
+    <a href="#testimonials">Reviews</a>
+    <a href="#recipes">Recipes</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div style="margin-top:40px;">
+    <a href="#products" class="btn btn-primary" style="width:100%;justify-content:center;">Order Now 🍯</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     1. HERO SECTION
+════════════════════════════════════════════════ -->
+<section id="hero" aria-label="Hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+  <div class="container">
+    <div class="hero-inner">
+      <!-- Content Side -->
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Handcrafted • Natural • Sugar-Free
+        </div>
+
+        <h1 class="hero-h1">
+          Sweetness Without Sugar,
+          <em>Happiness Without Limits.</em>
+        </h1>
+
+        <p class="hero-subtitle">
+          Premium handcrafted sugar-free sweets made with natural ingredients, 
+          crafted for healthy living without ever compromising on taste.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#products" class="btn btn-primary magnetic">
+            Explore Collection
+            <span class="icon-arrow">→</span>
+          </a>
+          <a href="#about" class="btn btn-outline magnetic">
+            Our Story
+          </a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon">🌿</div>
+            100% Natural
+          </div>
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon">💚</div>
+            Diabetic Friendly
+          </div>
+          <div class="hero-trust-item">
+            <div class="hero-trust-icon">🏆</div>
+            Award Winning
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Side -->
+      <div class="hero-visual">
+        <div class="hero-image-wrap">
+          <!-- Decorative rings -->
+          <div class="hero-img-ring ring-1"></div>
+          <div class="hero-img-ring ring-2"></div>
+
+          <!-- Floating badges -->
+          <div class="hero-float-badge badge-top-right glass" style="background:rgba(255,253,248,0.85);">
+            <span>🍯</span> Zero Added Sugar
+          </div>
+          <div class="hero-float-badge badge-bottom-left glass" style="background:rgba(255,253,248,0.85);">
+            <span>⭐</span> 4.9 Rating · 10K+ Reviews
+          </div>
+          <div class="hero-float-badge badge-mid-right glass" style="background:rgba(255,253,248,0.85);">
+            <span>🌿</span> Stevia Sweetened
+          </div>
+
+          <!-- Product image -->
+          <div class="hero-image-frame">
+            <img 
+              src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/hero_product_platter_1785343251852.png"
+              onerror="this.src='images/hero_platter.png'"
+              alt="Premium sugar-free sweet platter with ladoo, kaju katli, barfi and chocolates" 
+              loading="eager"
+            />
+            <div class="hero-img-overlay"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     MARQUEE STRIP
+════════════════════════════════════════════════ -->
+<div class="marquee-section" aria-hidden="true">
+  <div class="marquee-track" id="marquee-track">
+    <!-- Items duplicated for seamless loop -->
+    <div class="marquee-item"><span class="dot"></span> Zero Added Sugar</div>
+    <div class="marquee-item"><span class="dot"></span> 100% Natural Sweeteners</div>
+    <div class="marquee-item"><span class="dot"></span> Diabetic Friendly</div>
+    <div class="marquee-item"><span class="dot"></span> Handcrafted with Love</div>
+    <div class="marquee-item"><span class="dot"></span> Low Glycemic Index</div>
+    <div class="marquee-item"><span class="dot"></span> No Preservatives</div>
+    <div class="marquee-item"><span class="dot"></span> Keto Friendly</div>
+    <div class="marquee-item"><span class="dot"></span> Rich in Natural Fiber</div>
+    <div class="marquee-item"><span class="dot"></span> Zero Added Sugar</div>
+    <div class="marquee-item"><span class="dot"></span> 100% Natural Sweeteners</div>
+    <div class="marquee-item"><span class="dot"></span> Diabetic Friendly</div>
+    <div class="marquee-item"><span class="dot"></span> Handcrafted with Love</div>
+    <div class="marquee-item"><span class="dot"></span> Low Glycemic Index</div>
+    <div class="marquee-item"><span class="dot"></span> No Preservatives</div>
+    <div class="marquee-item"><span class="dot"></span> Keto Friendly</div>
+    <div class="marquee-item"><span class="dot"></span> Rich in Natural Fiber</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     2. ABOUT / BRAND STORY
+════════════════════════════════════════════════ -->
+<section id="about" aria-labelledby="about-heading">
+  <div class="container">
+    <div class="about-grid">
+      <!-- Image Column -->
+      <div class="about-image-wrap reveal-left">
+        <div class="about-img-main">
+          <img 
+            src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/about_artisan_1785343263291.png" 
+            onerror="this.src='images/about_artisan.png'"
+            alt="Artisan confectioner handcrafting premium sugar-free sweets" 
+            loading="lazy"
+          />
+        </div>
+        <div class="about-img-accent float-3">
+          <img 
+            src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/ingredients_flatlay_1785343295959.png" 
+            onerror="this.src='images/ingredients.png'"
+            alt="Natural premium ingredients" 
+            loading="lazy"
+          />
+        </div>
+        <div class="about-stats-row">
+          <div class="about-stat reveal stagger-1">
+            <div class="about-stat-number">2019</div>
+            <div class="about-stat-label">Founded with Passion</div>
+          </div>
+          <div class="about-stat reveal stagger-2">
+            <div class="about-stat-number">50+</div>
+            <div class="about-stat-label">Artisan Recipes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Column -->
+      <div class="about-content reveal-right">
+        <div class="section-tag">Our Story</div>
+        <h2 id="about-heading" class="section-title">
+          Born from a <em>Sweet Compromise</em>
+        </h2>
+        <p class="section-subtitle">
+          When our founder's father was diagnosed with diabetes, she refused to let him 
+          give up his love for traditional Indian sweets. GUILTO was born from that promise — 
+          that health should never mean deprivation.
+        </p>
+        <p class="section-subtitle" style="margin-top:16px;">
+          Every sweet we craft uses time-honored recipes, natural sweeteners like stevia 
+          and monk fruit, and the finest organic ingredients. No compromise. Pure bliss.
+        </p>
+
+        <div class="about-features">
+          <div class="about-feature reveal stagger-1">
+            <div class="about-feature-icon">🌱</div>
+            <div class="about-feature-text">
+              <h4>100% Natural Sweeteners</h4>
+              <p>We use only stevia, monk fruit, and dates — never artificial substitutes.</p>
+            </div>
+          </div>
+          <div class="about-feature reveal stagger-2">
+            <div class="about-feature-icon">👐</div>
+            <div class="about-feature-text">
+              <h4>Handcrafted in Small Batches</h4>
+              <p>Every piece is made by hand in our artisan kitchen for peak freshness.</p>
+            </div>
+          </div>
+          <div class="about-feature reveal stagger-3">
+            <div class="about-feature-icon">🔬</div>
+            <div class="about-feature-text">
+              <h4>Lab-Tested Quality</h4>
+              <p>Every batch is tested to confirm nutrition claims and zero artificial additives.</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:40px">
+          <a href="#products" class="btn btn-primary magnetic">
+            Explore Our Sweets
+            <span class="icon-arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     3. INGREDIENT SHOWCASE
+════════════════════════════════════════════════ -->
+<section id="ingredients" aria-labelledby="ingredients-heading">
+  <div class="container">
+    <div class="ingredients-header">
+      <div class="section-tag">Pure Ingredients</div>
+      <h2 id="ingredients-heading" class="section-title">
+        Nature's Finest, <em>Carefully Chosen</em>
+      </h2>
+      <p class="section-subtitle" style="margin:0 auto;">
+        Every ingredient is ethically sourced, organically grown, and chosen for both 
+        taste and health benefits. No fillers. No artificial anything.
+      </p>
+    </div>
+
+    <div class="ingredients-grid">
+      <div class="ingredient-card reveal stagger-1" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🥜</span>
+        <div class="ingredient-name">Almonds</div>
+        <div class="ingredient-desc">Rich in Vitamin E & healthy fats</div>
+        <div class="ingredient-tag">Protein Rich</div>
+      </div>
+      <div class="ingredient-card reveal stagger-2" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🦪</span>
+        <div class="ingredient-name">Cashews</div>
+        <div class="ingredient-desc">Creamy base for premium barfi & katli</div>
+        <div class="ingredient-tag">Heart Healthy</div>
+      </div>
+      <div class="ingredient-card reveal stagger-3" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🌴</span>
+        <div class="ingredient-name">Medjool Dates</div>
+        <div class="ingredient-desc">Natural sweetness with fiber & minerals</div>
+        <div class="ingredient-tag">Natural Sugar</div>
+      </div>
+      <div class="ingredient-card reveal stagger-4" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🍃</span>
+        <div class="ingredient-name">Stevia</div>
+        <div class="ingredient-desc">300x sweeter than sugar, zero calories</div>
+        <div class="ingredient-tag">Zero Glycemic</div>
+      </div>
+      <div class="ingredient-card reveal stagger-5" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🍈</span>
+        <div class="ingredient-name">Monk Fruit</div>
+        <div class="ingredient-desc">Ancient sweetener with zero GI impact</div>
+        <div class="ingredient-tag">Antioxidant</div>
+      </div>
+      <div class="ingredient-card reveal stagger-1" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🍫</span>
+        <div class="ingredient-name">Dark Cocoa</div>
+        <div class="ingredient-desc">Rich flavanols with mood-boosting properties</div>
+        <div class="ingredient-tag">Antioxidant</div>
+      </div>
+      <div class="ingredient-card reveal stagger-2" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🟢</span>
+        <div class="ingredient-name">Pistachios</div>
+        <div class="ingredient-desc">Premium green nuts for color & crunch</div>
+        <div class="ingredient-tag">High Protein</div>
+      </div>
+      <div class="ingredient-card reveal stagger-3" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🌰</span>
+        <div class="ingredient-name">Walnuts</div>
+        <div class="ingredient-desc">Omega-3 rich brain food in every bite</div>
+        <div class="ingredient-tag">Brain Health</div>
+      </div>
+      <div class="ingredient-card reveal stagger-4" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🟡</span>
+        <div class="ingredient-name">Saffron</div>
+        <div class="ingredient-desc">World's finest spice for luxury & mood</div>
+        <div class="ingredient-tag">Mood Booster</div>
+      </div>
+      <div class="ingredient-card reveal stagger-5" data-tilt>
+        <div class="ingredient-glow"></div>
+        <span class="ingredient-emoji">🌸</span>
+        <div class="ingredient-name">Cardamom</div>
+        <div class="ingredient-desc">Digestive aid & aromatic flavoring</div>
+        <div class="ingredient-tag">Digestive</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     4. PRODUCT COLLECTION
+════════════════════════════════════════════════ -->
+<section id="products" aria-labelledby="products-heading">
+  <div class="container">
+    <div class="products-header">
+      <div>
+        <div class="section-tag">Our Collection</div>
+        <h2 id="products-heading" class="section-title">
+          Crafted for <em>Every Craving</em>
+        </h2>
+      </div>
+      <a href="#" class="btn btn-outline" style="flex-shrink:0">View All →</a>
+    </div>
+
+    <div class="category-filters">
+      <button class="filter-btn active" data-filter="all" id="filter-all">All Products</button>
+      <button class="filter-btn" data-filter="traditional" id="filter-traditional">Traditional Sweets</button>
+      <button class="filter-btn" data-filter="chocolate" id="filter-chocolate">Chocolates</button>
+      <button class="filter-btn" data-filter="cookies" id="filter-cookies">Healthy Cookies</button>
+      <button class="filter-btn" data-filter="keto" id="filter-keto">Keto Collection</button>
+      <button class="filter-btn" data-filter="gift" id="filter-gift">Gift Boxes</button>
+    </div>
+
+    <div class="products-grid" id="products-grid">
+
+      <!-- Product 1: Ladoo -->
+      <article class="product-card reveal stagger-1" data-category="traditional" data-product-id="1" data-product-name="Besan Ladoo" data-product-price="349">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_ladoo_1785343306155.png" onerror="this.src='images/product_ladoo.png'" alt="Premium Sugar-Free Besan Ladoo" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-gold">Best Seller</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view">
+            <span>👁</span> Quick View
+          </div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Sugar-Free Besan Ladoo</h3>
+          <p class="product-desc">Traditional gram flour ladoo sweetened with stevia & cardamom. Rich, nutty, indulgent.</p>
+          <div class="product-footer">
+            <div class="product-price">
+              <del>₹420</del> ₹349
+            </div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 2: Kaju Katli -->
+      <article class="product-card reveal stagger-2" data-category="traditional" data-product-id="2" data-product-name="Kaju Katli" data-product-price="599">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_kaju_katli_1785343317577.png" onerror="this.src='images/product_kaju_katli.png'" alt="Premium Sugar-Free Kaju Katli" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-choc">Chef's Choice</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Kaju Katli with Silver Leaf</h3>
+          <p class="product-desc">Silky cashew diamonds adorned with real silver leaf. Diabetic-friendly luxury.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹750</del> ₹599</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 3: Chocolate -->
+      <article class="product-card reveal stagger-3" data-category="chocolate" data-product-id="3" data-product-name="Dark Chocolate Truffles" data-product-price="449">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_chocolate_1785343337676.png" onerror="this.src='images/product_chocolate.png'" alt="Premium Sugar-Free Dark Chocolate Truffles" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-berry">New Arrival</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Dark Chocolate Truffles</h3>
+          <p class="product-desc">85% dark chocolate truffles with zero sugar. Hazelnut, pistachio & rose infusions.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹550</del> ₹449</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 4: Barfi -->
+      <article class="product-card reveal stagger-4" data-category="traditional" data-product-id="4" data-product-name="Pistachio Barfi" data-product-price="499">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_barfi_1785343346173.png" onerror="this.src='images/product_barfi.png'" alt="Premium Sugar-Free Pistachio Barfi" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-green">Festival Special</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Pistachio Barfi Squares</h3>
+          <p class="product-desc">Vibrant pistachio fudge squares with a floral rose water note. Garnished with silver.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹620</del> ₹499</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 5: Cookies -->
+      <article class="product-card reveal stagger-5" data-category="cookies" data-product-id="5" data-product-name="Almond Crunch Cookies" data-product-price="299">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/ingredients_flatlay_1785343295959.png" onerror="this.src='images/ingredients.png'" alt="Almond Crunch Cookies" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-green">Keto Friendly</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Almond Crunch Cookies</h3>
+          <p class="product-desc">Buttery almond flour cookies with zero sugar. Crisp outside, chewy inside. Perfect snack.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹380</del> ₹299</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 6: Dry Fruit Box -->
+      <article class="product-card reveal stagger-6" data-category="gift" data-product-id="6" data-product-name="Dry Fruit Bites Box" data-product-price="799">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/ingredients_flatlay_1785343295959.png" onerror="this.src='images/ingredients.png'" alt="Premium Dry Fruit Bites Box" loading="lazy" style="object-position:top" />
+          <div class="product-card-badges">
+            <span class="badge badge-choc">Premium</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Royal Dry Fruit Bites</h3>
+          <p class="product-desc">Pressed medallions of dates, figs, almonds & saffron. No sugar needed — nature says it all.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹950</del> ₹799</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 7: Keto Ladoo -->
+      <article class="product-card reveal stagger-1" data-category="keto" data-product-id="7" data-product-name="Keto Coconut Ladoo" data-product-price="379">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_ladoo_1785343306155.png" onerror="this.src='images/product_ladoo.png'" alt="Keto Coconut Ladoo" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-green">Keto</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Keto Coconut Ladoo</h3>
+          <p class="product-desc">Shredded coconut & almond flour ladoo with monk fruit sweetener. Only 2g net carbs.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹450</del> ₹379</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Product 8: Protein Bites -->
+      <article class="product-card reveal stagger-2" data-category="keto" data-product-id="8" data-product-name="Protein Energy Bites" data-product-price="429">
+        <div class="product-card-image">
+          <img src="file:///C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/product_chocolate_1785343337676.png" onerror="this.src='images/product_chocolate.png'" alt="Protein Energy Bites" loading="lazy" />
+          <div class="product-card-badges">
+            <span class="badge badge-gold">High Protein</span>
+          </div>
+          <button class="product-wishlist" aria-label="Add to wishlist" data-wishlist>🤍</button>
+          <div class="product-quick-view"><span>👁</span> Quick View</div>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-name">Protein Energy Bites</h3>
+          <p class="product-desc">12g protein per serving. Whey + dates + dark cocoa. Pre or post-workout sweetness.</p>
+          <div class="product-footer">
+            <div class="product-price"><del>₹520</del> ₹429</div>
+            <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart>+</button>
+          </div>
+        </div>
+      </article>
+
+    </div><!-- end .products-grid -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     5. HEALTH BENEFITS
+════════════════════════════════════════════════ -->
+<section id="benefits" aria-labelledby="benefits-heading">
+  <div class="container">
+    <div class="benefits-header">
+      <div class="section-tag">Why GUILTO</div>
+      <h2 id="benefits-heading" class="section-title">
+        Good for Your Body, <em>Bliss for Your Soul</em>
+      </h2>
+      <p class="section-subtitle">
+        Our sweets aren't just sugar-free — they're thoughtfully crafted to nourish and delight.
+      </p>
+    </div>
+
+    <div class="benefits-grid">
+      <div class="benefit-card reveal stagger-1">
+        <div class="benefit-icon-wrap">🚫🍬</div>
+        <div class="benefit-title">Zero Added Sugar</div>
+        <div class="benefit-desc">Sweetened only with stevia, monk fruit & dates. Never refined white sugar.</div>
+      </div>
+      <div class="benefit-card reveal stagger-2">
+        <div class="benefit-icon-wrap">📉</div>
+        <div class="benefit-title">Low Glycemic Index</div>
+        <div class="benefit-desc">Gentle on blood sugar levels — perfect for diabetics and fitness enthusiasts.</div>
+      </div>
+      <div class="benefit-card reveal stagger-3">
+        <div class="benefit-icon-wrap">💊</div>
+        <div class="benefit-title">Diabetic Friendly</div>
+        <div class="benefit-desc">Clinically suitable for Type 1 & Type 2 diabetes when enjoyed in moderation.</div>
+      </div>
+      <div class="benefit-card reveal stagger-4">
+        <div class="benefit-icon-wrap">🌾</div>
+        <div class="benefit-title">Rich in Fiber</div>
+        <div class="benefit-desc">Nuts, dates & seeds provide natural fiber for healthy digestion.</div>
+      </div>
+      <div class="benefit-card reveal stagger-1">
+        <div class="benefit-icon-wrap">🌿</div>
+        <div class="benefit-title">Natural Sweeteners</div>
+        <div class="benefit-desc">Stevia & monk fruit — plant-based, non-GMO, no chemical processing.</div>
+      </div>
+      <div class="benefit-card reveal stagger-2">
+        <div class="benefit-icon-wrap">💪</div>
+        <div class="benefit-title">High Protein Options</div>
+        <div class="benefit-desc">Nut-based recipes deliver 8–14g protein per serving for muscle support.</div>
+      </div>
+      <div class="benefit-card reveal stagger-3">
+        <div class="benefit-icon-wrap">🫀</div>
+        <div class="benefit-title">Healthy Fats</div>
+        <div class="benefit-desc">Almonds, cashews & walnuts provide heart-healthy omega fats in every bite.</div>
+      </div>
+      <div class="benefit-card reveal stagger-4">
+        <div class="benefit-icon-wrap">🚫🧪</div>
+        <div class="benefit-title">No Preservatives</div>
+        <div class="benefit-desc">Made fresh in small batches. No artificial colors, flavors, or preservatives.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     6. MANUFACTURING PROCESS
+════════════════════════════════════════════════ -->
+<section id="process" aria-labelledby="process-heading">
+  <div class="container">
+    <div class="process-header">
+      <div class="section-tag">Our Process</div>
+      <h2 id="process-heading" class="section-title">
+        From Nature's Best to <em>Your Hands</em>
+      </h2>
+      <p class="section-subtitle" style="margin:0 auto;">
+        Every step of our journey is guided by quality, care, and craft.
+      </p>
+    </div>
+
+    <div class="process-scroll-wrap" id="process-scroll">
+      <div class="process-track" id="process-track">
+        <div class="process-line-fill" id="process-fill"></div>
+
+        <div class="process-step active reveal stagger-1">
+          <div class="process-step-icon">🌿</div>
+          <div class="process-step-num">Step 01</div>
+          <div class="process-step-title">Ingredient Sourcing</div>
+          <div class="process-step-desc">Only certified organic & ethically sourced nuts, spices & sweeteners.</div>
+        </div>
+
+        <div class="process-step reveal stagger-2">
+          <div class="process-step-icon">🧑‍🍳</div>
+          <div class="process-step-num">Step 02</div>
+          <div class="process-step-title">Artisan Preparation</div>
+          <div class="process-step-desc">Handcrafted in small batches using traditional copper vessels & stone grinding.</div>
+        </div>
+
+        <div class="process-step reveal stagger-3">
+          <div class="process-step-icon">🍃</div>
+          <div class="process-step-num">Step 03</div>
+          <div class="process-step-title">Natural Sweetening</div>
+          <div class="process-step-desc">Precision-measured stevia & monk fruit added for perfect sweetness balance.</div>
+        </div>
+
+        <div class="process-step reveal stagger-4">
+          <div class="process-step-icon">🔬</div>
+          <div class="process-step-num">Step 04</div>
+          <div class="process-step-title">Quality Testing</div>
+          <div class="process-step-desc">Each batch is lab-tested for sugar content, shelf life & nutrition accuracy.</div>
+        </div>
+
+        <div class="process-step reveal stagger-5">
+          <div class="process-step-icon">🎁</div>
+          <div class="process-step-num">Step 05</div>
+          <div class="process-step-title">Luxury Packaging</div>
+          <div class="process-step-desc">Hand-packed in premium eco-friendly boxes with gold foil & satin ribbons.</div>
+        </div>
+
+        <div class="process-step reveal stagger-6">
+          <div class="process-step-icon">🚀</div>
+          <div class="process-step-num">Step 06</div>
+          <div class="process-step-title">Swift Delivery</div>
+          <div class="process-step-desc">Temperature-controlled shipping to 25+ cities across India within 48 hours.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     7. BEST SELLERS
+════════════════════════════════════════════════ -->
+<section id="bestsellers" aria-labelledby="bestsellers-heading">
+  <div class="container">
+    <div class="bestsellers-header">
+      <div class="section-tag">Top Picks</div>
+      <h2 id="bestsellers-heading" class="section-title">
+        Loved by <em>Thousands</em>
+      </h2>
+    </div>
+
+    <div class="bestsellers-grid">
+      <article class="bs-card reveal stagger-1">
+        <div class="bs-card-image">
+          <img src="images/product_kaju_katli.png" alt="Kaju Katli Premium Collection" loading="lazy" />
+          <span class="bs-badge badge-gold">⭐ Best Seller</span>
+        </div>
+        <div class="bs-card-body">
+          <h3 class="bs-card-name">Kaju Katli Deluxe</h3>
+          <div class="bs-card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">(2,847 reviews)</span>
+          </div>
+          <p class="bs-card-desc">Our signature cashew diamonds — silky smooth, delicately sweet, and dressed in real silver leaf. The ultimate gifting choice for every occasion.</p>
+          <div class="bs-card-footer">
+            <span class="bs-price">₹599</span>
+            <button class="btn btn-primary magnetic" style="padding:12px 24px;font-size:0.8rem;" data-add-cart data-product-id="2" data-product-name="Kaju Katli" data-product-price="599">Add to Cart</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="bs-card reveal stagger-2">
+        <div class="bs-card-image">
+          <img src="images/hero_platter.png" alt="Assorted Sugar-Free Sweet Box" loading="lazy" style="object-position:center" />
+          <span class="bs-badge badge-choc">🎁 Gift Ready</span>
+        </div>
+        <div class="bs-card-body">
+          <h3 class="bs-card-name">Assorted Gift Box</h3>
+          <div class="bs-card-rating">
+            <span class="stars">★★★★★</span>
+            <span class="review-count">(1,293 reviews)</span>
+          </div>
+          <p class="bs-card-desc">A handpicked selection of our finest sweets — ladoo, katli, barfi, and chocolates — beautifully arranged in a luxury gift box for any occasion.</p>
+          <div class="bs-card-footer">
+            <span class="bs-price">₹1,299</span>
+            <button class="btn btn-primary magnetic" style="padding:12px 24px;font-size:0.8rem;" data-add-cart data-product-id="9" data-product-name="Assorted Gift Box" data-product-price="1299">Add to Cart</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="bs-card reveal stagger-3">
+        <div class="bs-card-image">
+          <img src="images/product_barfi.png" alt="Premium Barfi Collection" loading="lazy" />
+          <span class="bs-badge badge-berry">🌸 Festival Special</span>
+        </div>
+        <div class="bs-card-body">
+          <h3 class="bs-card-name">Barfi Bouquet Box</h3>
+          <div class="bs-card-rating">
+            <span class="stars">★★★★☆</span>
+            <span class="review-count">(891 reviews)</span>
+          </div>
+          <p class="bs-card-desc">Five varieties of barfi — pistachio, rose, saffron, coconut & chocolate — nestled in a stunning flower-arrangement-style gift box.</p>
+          <div class="bs-card-footer">
+            <span class="bs-price">₹899</span>
+            <button class="btn btn-primary magnetic" style="padding:12px 24px;font-size:0.8rem;" data-add-cart data-product-id="10" data-product-name="Barfi Bouquet Box" data-product-price="899">Add to Cart</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     8. TESTIMONIALS
+════════════════════════════════════════════════ -->
+<section id="testimonials" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="testimonials-header">
+      <div class="section-tag">Customer Love</div>
+      <h2 id="testimonials-heading" class="section-title">
+        What Our <em>Sweet Family</em> Says
+      </h2>
+    </div>
+  </div>
+
+  <div class="testimonials-track-wrap">
+    <div class="testimonials-track" id="testimonials-track">
+      <!-- Row 1 -->
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">My diabetic father cried the first time he ate kaju katli after 8 years. GUILTO gave him his favourite sweet back. Cannot put a price on that.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">P</div>
+          <div>
+            <div class="testi-name">Priya Sharma</div>
+            <div class="testi-loc">📍 Delhi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">I sent these as Diwali gifts and everyone thought I ordered from a 5-star hotel. The packaging alone is show-stopping. Taste is even better.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">R</div>
+          <div>
+            <div class="testi-name">Rohan Mehta</div>
+            <div class="testi-loc">📍 Mumbai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">As a fitness coach, I'm very picky. GUILTO's protein bites are the only sweet treat I recommend to all my clients. Clean label, amazing taste.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div>
+            <div class="testi-name">Ananya Kapoor</div>
+            <div class="testi-loc">📍 Bangalore</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">The dark chocolate truffles are world-class. I've had chocolates in Paris and Zürich — GUILTO holds its own. Absolutely stunning quality.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">K</div>
+          <div>
+            <div class="testi-name">Karan Bose</div>
+            <div class="testi-loc">📍 Kolkata</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">Ordered for my wedding. Every guest asked where these came from. We went through 5kg in one evening. The ladoo especially — melt in your mouth perfection.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">S</div>
+          <div>
+            <div class="testi-name">Sneha Joshi</div>
+            <div class="testi-loc">📍 Pune</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">PCOS-friendly, naturally sweetened, and tastes like something from a Michelin-star kitchen. I'm a monthly subscriber now. Never going back to regular sweets.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">N</div>
+          <div>
+            <div class="testi-name">Nisha Reddy</div>
+            <div class="testi-loc">📍 Hyderabad</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Duplicated for seamless loop -->
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">My diabetic father cried the first time he ate kaju katli after 8 years. GUILTO gave him his favourite sweet back. Cannot put a price on that.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">P</div>
+          <div>
+            <div class="testi-name">Priya Sharma</div>
+            <div class="testi-loc">📍 Delhi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">I sent these as Diwali gifts and everyone thought I ordered from a 5-star hotel. The packaging alone is show-stopping. Taste is even better.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">R</div>
+          <div>
+            <div class="testi-name">Rohan Mehta</div>
+            <div class="testi-loc">📍 Mumbai</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     9. GIFT BOX EXPERIENCE
+════════════════════════════════════════════════ -->
+<section id="giftbox" aria-labelledby="giftbox-heading">
+  <div class="container">
+    <div class="giftbox-inner">
+      <div class="giftbox-visual reveal-left">
+        <div class="giftbox-image-wrap">
+          <div class="giftbox-sparkle"></div>
+          <div class="giftbox-sparkle"></div>
+          <div class="giftbox-sparkle"></div>
+          <div class="giftbox-sparkle"></div>
+          <img src="images/gift_box.png" alt="Luxury GUILTO Sugar-Free Gift Box" loading="lazy" />
+        </div>
+      </div>
+
+      <div class="giftbox-content reveal-right">
+        <div class="section-tag">Gift the Love</div>
+        <h2 id="giftbox-heading" class="section-title">
+          Luxury Gifting, <em>Guilt-Free</em>
+        </h2>
+        <p class="section-subtitle">
+          Our curated gift boxes are an experience in themselves. Premium packaging, 
+          hand-tied ribbons, personalized cards — and sweets they'll never forget.
+        </p>
+
+        <div class="gift-occasions">
+          <div class="gift-occasion">🪔 Diwali</div>
+          <div class="gift-occasion">🎊 Raksha Bandhan</div>
+          <div class="gift-occasion">💍 Weddings</div>
+          <div class="gift-occasion">🎂 Birthdays</div>
+          <div class="gift-occasion">☀️ Eid</div>
+          <div class="gift-occasion">🎄 Christmas</div>
+          <div class="gift-occasion">💼 Corporate</div>
+        </div>
+
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <a href="#products" class="btn btn-primary magnetic">
+            Shop Gift Boxes
+            <span class="icon-arrow">→</span>
+          </a>
+          <a href="#contact" class="btn btn-outline magnetic">Bulk Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Curated Gift Packs Grid -->
+    <div class="gift-packs-container">
+      <h3 class="gift-packs-title">Choose Your <em>Luxury Gift Pack</em></h3>
+
+      <div class="gift-packs-grid">
+
+        <!-- Pack 1 -->
+        <article class="gift-pack-card reveal stagger-1" data-tilt data-product-id="gift-pack-1" data-product-name="Royal Heritage Hamper" data-product-price="1499">
+          <div class="gift-pack-img-wrap">
+            <img src="images/gift_box.png" alt="Royal Heritage Hamper" loading="lazy" />
+            <span class="gift-pack-badge badge-gold">👑 Best Seller</span>
+          </div>
+          <div class="gift-pack-body">
+            <h4 class="gift-pack-name">Royal Heritage Hamper</h4>
+            <div class="bs-card-rating" style="margin-bottom:8px">
+              <span class="stars">★★★★★</span>
+              <span class="review-count">(4.9/5)</span>
+            </div>
+            <ul class="gift-pack-items">
+              <li class="gift-pack-item"><span>✓</span> 4x Besan Ladoo</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Kaju Katli with Silver Leaf</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Pistachio Barfi Squares</li>
+              <li class="gift-pack-item"><span>✓</span> Custom Gift Card & Satin Ribbon</li>
+            </ul>
+            <div class="gift-pack-footer">
+              <div class="gift-pack-price"><del>₹1,799</del> ₹1,499</div>
+              <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart data-product-id="gift-pack-1" data-product-name="Royal Heritage Hamper" data-product-price="1499">+</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pack 2 -->
+        <article class="gift-pack-card reveal stagger-2" data-tilt data-product-id="gift-pack-2" data-product-name="Artisan Chocolate Treasury" data-product-price="1299">
+          <div class="gift-pack-img-wrap">
+            <img src="images/product_chocolate.png" alt="Artisan Chocolate Treasury" loading="lazy" />
+            <span class="gift-pack-badge badge-choc">🍫 Chef's Special</span>
+          </div>
+          <div class="gift-pack-body">
+            <h4 class="gift-pack-name">Artisan Chocolate Treasury</h4>
+            <div class="bs-card-rating" style="margin-bottom:8px">
+              <span class="stars">★★★★★</span>
+              <span class="review-count">(5.0/5)</span>
+            </div>
+            <ul class="gift-pack-items">
+              <li class="gift-pack-item"><span>✓</span> 6x 85% Dark Cocoa Truffles</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Hazelnut & Rose Barks</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Almond Dark Medallions</li>
+              <li class="gift-pack-item"><span>✓</span> Gold Foil Embossed Luxury Box</li>
+            </ul>
+            <div class="gift-pack-footer">
+              <div class="gift-pack-price"><del>₹1,550</del> ₹1,299</div>
+              <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart data-product-id="gift-pack-2" data-product-name="Artisan Chocolate Treasury" data-product-price="1299">+</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pack 3 -->
+        <article class="gift-pack-card reveal stagger-3" data-tilt data-product-id="gift-pack-3" data-product-name="Wellness & Keto Delight" data-product-price="999">
+          <div class="gift-pack-img-wrap">
+            <img src="images/ingredients.png" alt="Wellness & Keto Delight Box" loading="lazy" />
+            <span class="gift-pack-badge badge-green">🌿 Keto & Diabetic</span>
+          </div>
+          <div class="gift-pack-body">
+            <h4 class="gift-pack-name">Wellness & Keto Delight</h4>
+            <div class="bs-card-rating" style="margin-bottom:8px">
+              <span class="stars">★★★★★</span>
+              <span class="review-count">(4.8/5)</span>
+            </div>
+            <ul class="gift-pack-items">
+              <li class="gift-pack-item"><span>✓</span> 4x Keto Coconut Ladoo (2g Carbs)</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Protein Energy Bites (12g Protein)</li>
+              <li class="gift-pack-item"><span>✓</span> 4x Royal Medjool Date Bites</li>
+              <li class="gift-pack-item"><span>✓</span> Eco-Friendly Fiber Gift Box</li>
+            </ul>
+            <div class="gift-pack-footer">
+              <div class="gift-pack-price"><del>₹1,200</del> ₹999</div>
+              <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart data-product-id="gift-pack-3" data-product-name="Wellness & Keto Delight" data-product-price="999">+</button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pack 4 -->
+        <article class="gift-pack-card reveal stagger-4" data-tilt data-product-id="gift-pack-4" data-product-name="Imperial Celebration Chest" data-product-price="2499">
+          <div class="gift-pack-img-wrap">
+            <img src="images/hero_platter.png" alt="Imperial Celebration Chest" loading="lazy" />
+            <span class="gift-pack-badge badge-berry">✨ Imperial Edition</span>
+          </div>
+          <div class="gift-pack-body">
+            <h4 class="gift-pack-name">Imperial Celebration Chest</h4>
+            <div class="bs-card-rating" style="margin-bottom:8px">
+              <span class="stars">★★★★★</span>
+              <span class="review-count">(5.0/5)</span>
+            </div>
+            <ul class="gift-pack-items">
+              <li class="gift-pack-item"><span>✓</span> 16x Assorted Signature Sweets</li>
+              <li class="gift-pack-item"><span>✓</span> 1x Engraved Brass Spoon</li>
+              <li class="gift-pack-item"><span>✓</span> Saffron & Gold Leaf Finishing</li>
+              <li class="gift-pack-item"><span>✓</span> Handcrafted Brass Keepsake Chest</li>
+            </ul>
+            <div class="gift-pack-footer">
+              <div class="gift-pack-price"><del>₹2,999</del> ₹2,499</div>
+              <button class="add-to-cart-btn" aria-label="Add to cart" data-add-cart data-product-id="gift-pack-4" data-product-name="Imperial Celebration Chest" data-product-price="2499">+</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     10. STATISTICS
+════════════════════════════════════════════════ -->
+<section id="stats" aria-label="Company statistics">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal stagger-1">
+        <div class="stat-number">
+          <span class="counter" data-target="50">0</span><span>+</span>
+        </div>
+        <div class="stat-label">Premium Recipes</div>
+      </div>
+      <div class="stat-item reveal stagger-2">
+        <div class="stat-number">
+          <span class="counter" data-target="100">0</span><span>K+</span>
+        </div>
+        <div class="stat-label">Happy Customers</div>
+      </div>
+      <div class="stat-item reveal stagger-3">
+        <div class="stat-number">
+          <span class="counter" data-target="25">0</span><span>+</span>
+        </div>
+        <div class="stat-label">Cities Served</div>
+      </div>
+      <div class="stat-item reveal stagger-4">
+        <div class="stat-number">
+          <span class="counter" data-target="100">0</span><span>%</span>
+        </div>
+        <div class="stat-label">Natural Ingredients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     11. RECIPES
+════════════════════════════════════════════════ -->
+<section id="recipes" aria-labelledby="recipes-heading">
+  <div class="container">
+    <div class="recipes-header">
+      <div>
+        <div class="section-tag">Healthy Recipes</div>
+        <h2 id="recipes-heading" class="section-title">
+          Make it at <em>Home</em>
+        </h2>
+      </div>
+      <a href="#" class="btn btn-outline" style="flex-shrink:0">All Recipes →</a>
+    </div>
+
+    <div class="recipes-grid">
+      <div class="recipe-card reveal stagger-1">
+        <div class="recipe-image">
+          🎂
+          <div class="recipe-steam">
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+          </div>
+        </div>
+        <div class="recipe-body">
+          <h3 class="recipe-title">Sugar-Free Cheesecake</h3>
+          <div class="recipe-meta">
+            <span>⏱ 45 min</span>
+            <span>👤 8 servings</span>
+            <span>🔥 280 cal</span>
+          </div>
+          <div class="recipe-tags">
+            <span class="recipe-tag">Keto</span>
+            <span class="recipe-tag">Gluten-Free</span>
+            <span class="recipe-tag">No-Bake</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card reveal stagger-2">
+        <div class="recipe-image">
+          🍫
+          <div class="recipe-steam">
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+          </div>
+        </div>
+        <div class="recipe-body">
+          <h3 class="recipe-title">Healthy Dark Brownie</h3>
+          <div class="recipe-meta">
+            <span>⏱ 30 min</span>
+            <span>👤 12 pieces</span>
+            <span>🔥 180 cal</span>
+          </div>
+          <div class="recipe-tags">
+            <span class="recipe-tag">High Protein</span>
+            <span class="recipe-tag">Low Sugar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recipe-card reveal stagger-3">
+        <div class="recipe-image">
+          🥥
+          <div class="recipe-steam">
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+            <div class="steam-strand"></div>
+          </div>
+        </div>
+        <div class="recipe-body">
+          <h3 class="recipe-title">Keto Coconut Ladoo</h3>
+          <div class="recipe-meta">
+            <span>⏱ 20 min</span>
+            <span>👤 15 pieces</span>
+            <span>🔥 95 cal</span>
+          </div>
+          <div class="recipe-tags">
+            <span class="recipe-tag">Keto</span>
+            <span class="recipe-tag">2g Net Carbs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     12. GALLERY
+════════════════════════════════════════════════ -->
+<section id="gallery" aria-labelledby="gallery-heading">
+  <div class="container">
+    <div class="gallery-header">
+      <div class="section-tag">Gallery</div>
+      <h2 id="gallery-heading" class="section-title">
+        A Feast for the <em>Eyes</em>
+      </h2>
+    </div>
+
+    <div class="masonry-grid" id="masonry-grid">
+      <div class="masonry-item reveal">
+        <img src="images/hero_platter.png" alt="Luxury sweet platter" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Our Signature Platter</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-1">
+        <img src="images/product_kaju_katli.png" alt="Kaju Katli" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Kaju Katli with Silver Leaf</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-2">
+        <img src="images/about_artisan.png" alt="Artisan preparation" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Crafted by Hand</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-3">
+        <img src="images/product_chocolate.png" alt="Dark Chocolate" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Dark Chocolate Truffles</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-1">
+        <img src="images/product_barfi.png" alt="Barfi squares" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Pistachio Barfi</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-2">
+        <img src="images/ingredients.png" alt="Natural Ingredients" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Pure Ingredients</span></div>
+      </div>
+      <div class="masonry-item reveal stagger-3">
+        <img src="images/gift_box.png" alt="Luxury gift box" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Luxury Gift Box</span></div>
+      </div>
+      <div class="masonry-item reveal">
+        <img src="images/product_ladoo.png" alt="Besan Ladoo" loading="lazy" />
+        <div class="masonry-overlay"><span class="masonry-caption">Besan Ladoo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     13. NEWSLETTER
+════════════════════════════════════════════════ -->
+<section id="newsletter" aria-label="Newsletter subscription">
+  <div class="container">
+    <div class="newsletter-inner">
+      <div class="section-tag" style="justify-content:center;">Stay Sweet</div>
+      <h2 class="section-title" style="color:#fff;">
+        Get Recipes, Offers & <em>Sweet Surprises</em>
+      </h2>
+      <p class="newsletter-subtitle">
+        Join 25,000+ health-conscious sweet lovers. Get exclusive recipes, 
+        early access to seasonal specials & 15% off your first order.
+      </p>
+
+      <form class="newsletter-form" id="newsletter-form" novalidate>
+        <input 
+          type="email" 
+          class="newsletter-input" 
+          id="newsletter-email"
+          placeholder="Enter your email address..." 
+          aria-label="Email address"
+          required
+        />
+        <button type="submit" class="newsletter-btn">Get 15% Off →</button>
+      </form>
+
+      <div class="newsletter-perks">
+        <div class="newsletter-perk">✓ Weekly Recipes</div>
+        <div class="newsletter-perk">✓ Early Access</div>
+        <div class="newsletter-perk">✓ No Spam, Ever</div>
+        <div class="newsletter-perk">✓ 15% First Order Discount</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     14. CONTACT
+════════════════════════════════════════════════ -->
+<section id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Info -->
+      <div class="contact-info reveal-left">
+        <div class="section-tag">Get in Touch</div>
+        <h2 id="contact-heading" class="section-title">
+          We'd Love to <em>Hear from You</em>
+        </h2>
+        <p class="section-subtitle">
+          Whether you have questions about our sweets, need help with a bulk order, 
+          or just want to say hello — we're always here.
+        </p>
+
+        <div class="contact-info-items">
+          <div class="contact-info-item">
+            <div class="contact-info-icon">📍</div>
+            <div class="contact-info-text">
+              <h4>Visit Us</h4>
+              <p>42, Sweet Lane, Chandni Chowk<br/>New Delhi — 110006</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon">📞</div>
+            <div class="contact-info-text">
+              <h4>Call Us</h4>
+              <p>+91 98765 43210<br/>Mon–Sat, 9am–7pm IST</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon">✉️</div>
+            <div class="contact-info-text">
+              <h4>Email Us</h4>
+              <p>hello@guilto.in<br/>We reply within 2 hours</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon">💬</div>
+            <div class="contact-info-text">
+              <h4>WhatsApp</h4>
+              <p>+91 98765 43210<br/>Quick replies 24/7</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-social">
+          <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+          <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+          <a href="#" class="social-icon" aria-label="YouTube">📺</a>
+          <a href="#" class="social-icon" aria-label="Pinterest">📌</a>
+          <a href="#" class="social-icon" aria-label="WhatsApp">💬</a>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-form-wrap reveal-right">
+        <form id="contact-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Full Name</label>
+              <input type="text" class="form-input" id="contact-name" placeholder="Your name" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-phone">Phone Number</label>
+              <input type="tel" class="form-input" id="contact-phone" placeholder="+91 00000 00000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-email">Email Address</label>
+            <input type="email" class="form-input" id="contact-email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">I'm interested in</label>
+            <select class="form-input" id="contact-subject" style="appearance:none;cursor:none;">
+              <option value="">Select an option...</option>
+              <option>Regular Order</option>
+              <option>Bulk / Corporate Order</option>
+              <option>Wedding / Event Order</option>
+              <option>Retailer Partnership</option>
+              <option>General Enquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Message</label>
+            <textarea class="form-textarea" id="contact-message" placeholder="Tell us how we can help you..." rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary magnetic" style="width:100%;justify-content:center;padding:16px;">
+            Send Message 🍯
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     15. FOOTER
+════════════════════════════════════════════════ -->
+<footer id="footer" role="contentinfo">
+  <!-- Wave divider -->
+  <svg class="footer-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#4B2E20"/>
+  </svg>
+
+  <div class="footer-inner container">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-brand">
+        <a href="#" class="footer-logo guilto-badge guilto-badge--footer" aria-label="GUILTO home">
+          <span class="guilto-wordmark">Guilt<sup>o</sup></span>
+          <span class="guilto-sub">EVERYDAY GUILT FREE</span>
+        </a>
+        <p class="footer-tagline">Premium handcrafted sugar-free sweets for a life of health, indulgence, and happiness — without the sugar.</p>
+        <div class="contact-social">
+          <a href="#" class="social-icon" aria-label="Instagram">📸</a>
+          <a href="#" class="social-icon" aria-label="Facebook">📘</a>
+          <a href="#" class="social-icon" aria-label="YouTube">📺</a>
+          <a href="#" class="social-icon" aria-label="Pinterest">📌</a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="#about">Our Story</a></li>
+          <li><a href="#ingredients">Ingredients</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#benefits">Health Benefits</a></li>
+          <li><a href="#giftbox">Gift Boxes</a></li>
+          <li><a href="#recipes">Recipes</a></li>
+        </ul>
+      </div>
+
+      <!-- Help -->
+      <div>
+        <div class="footer-col-title">Help & Info</div>
+        <ul class="footer-links">
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <!-- Newsletter -->
+      <div>
+        <div class="footer-col-title">Stay in the Loop</div>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);margin-bottom:16px;line-height:1.5;">Get recipes, offers & sweet news delivered weekly.</p>
+        <div class="footer-newsletter">
+          <div class="footer-input-wrap">
+            <input type="email" class="footer-email-input" placeholder="your@email.com" aria-label="Newsletter email" />
+            <button class="footer-sub-btn">Subscribe</button>
+          </div>
+        </div>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(255,255,255,0.35)">
+            <span>🔒</span> Secure Payments
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(255,255,255,0.35)">
+            <span>🚚</span> Free Delivery over ₹999
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(255,255,255,0.35)">
+            <span>🔄</span> Easy Returns within 48h
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 GUILTO. All rights reserved. Made with 🍯 in India.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Sitemap</a>
+        <a href="#">Accessibility</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════
+     SCRIPTS (CDN Libraries)
+════════════════════════════════════════════════ -->
+
+<!-- Image loader: sets absolute artifact paths directly so images show immediately -->
+<script>
+(function() {
+  var base = 'C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/';
+  var map = {
+    'images/hero_platter.png':       base + 'hero_product_platter_1785343251852.png',
+    'images/about_artisan.png':      base + 'about_artisan_1785343263291.png',
+    'images/gift_box.png':           base + 'gift_box_luxury_1785343284720.png',
+    'images/ingredients.png':        base + 'ingredients_flatlay_1785343295959.png',
+    'images/product_ladoo.png':      base + 'product_ladoo_1785343306155.png',
+    'images/product_kaju_katli.png': base + 'product_kaju_katli_1785343317577.png',
+    'images/product_chocolate.png':  base + 'product_chocolate_1785343337676.png',
+    'images/product_barfi.png':      base + 'product_barfi_1785343346173.png',
+  };
+  // Replace src immediately before browser starts loading
+  document.querySelectorAll('img').forEach(function(img) {
+    var s = img.getAttribute('src');
+    if (map[s]) img.setAttribute('src', map[s]);
+  });
+  // Also set on dynamically added images
+  var observer = new MutationObserver(function(muts) {
+    muts.forEach(function(m) {
+      m.addedNodes.forEach(function(n) {
+        if (n.tagName === 'IMG' && map[n.getAttribute('src')]) {
+          n.setAttribute('src', map[n.getAttribute('src')]);
+        }
+      });
+    });
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+<!-- Lenis Smooth Scroll -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js" defer></script>
+
+<!-- Our scripts -->
+<script src="js/particles.js" defer></script>
+<script src="js/main.js" defer></script>
+<script src="js/interactions.js" defer></script>
+
+</body>
+</html>
