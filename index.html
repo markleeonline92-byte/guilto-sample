@@ -29,30 +29,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 </head>
-<!-- Early image path resolver — runs synchronously before images load -->
-<script>
-window.__imgBase = 'C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/';
-window.__imgMap = {
-  'images/hero_platter.png':       __imgBase + 'hero_product_platter_1785343251852.png',
-  'images/about_artisan.png':      __imgBase + 'about_artisan_1785343263291.png',
-  'images/gift_box.png':           __imgBase + 'gift_box_luxury_1785343284720.png',
-  'images/ingredients.png':        __imgBase + 'ingredients_flatlay_1785343295959.png',
-  'images/product_ladoo.png':      __imgBase + 'product_ladoo_1785343306155.png',
-  'images/product_kaju_katli.png': __imgBase + 'product_kaju_katli_1785343317577.png',
-  'images/product_chocolate.png':  __imgBase + 'product_chocolate_1785343337676.png',
-  'images/product_barfi.png':      __imgBase + 'product_barfi_1785343346173.png',
-};
-// Override Image constructor to remap paths
-var _NativeImage = window.Image;
-window.Image = function(w,h) {
-  var img = new _NativeImage(w,h);
-  Object.defineProperty(img, 'src', {
-    set: function(v) { img.setAttribute('src', __imgMap[v] || v); },
-    get: function() { return img.getAttribute('src'); }
-  });
-  return img;
-};
-</script>
 
 <!-- ═══════════════════════════════════════════════
      CUSTOM CURSOR
@@ -1533,38 +1509,7 @@ window.Image = function(w,h) {
      SCRIPTS (CDN Libraries)
 ════════════════════════════════════════════════ -->
 
-<!-- Image loader: sets absolute artifact paths directly so images show immediately -->
-<script>
-(function() {
-  var base = 'C:/Users/user/.gemini/antigravity-ide/brain/16dcd075-eb3e-422e-a73e-a8a450420b03/';
-  var map = {
-    'images/hero_platter.png':       base + 'hero_product_platter_1785343251852.png',
-    'images/about_artisan.png':      base + 'about_artisan_1785343263291.png',
-    'images/gift_box.png':           base + 'gift_box_luxury_1785343284720.png',
-    'images/ingredients.png':        base + 'ingredients_flatlay_1785343295959.png',
-    'images/product_ladoo.png':      base + 'product_ladoo_1785343306155.png',
-    'images/product_kaju_katli.png': base + 'product_kaju_katli_1785343317577.png',
-    'images/product_chocolate.png':  base + 'product_chocolate_1785343337676.png',
-    'images/product_barfi.png':      base + 'product_barfi_1785343346173.png',
-  };
-  // Replace src immediately before browser starts loading
-  document.querySelectorAll('img').forEach(function(img) {
-    var s = img.getAttribute('src');
-    if (map[s]) img.setAttribute('src', map[s]);
-  });
-  // Also set on dynamically added images
-  var observer = new MutationObserver(function(muts) {
-    muts.forEach(function(m) {
-      m.addedNodes.forEach(function(n) {
-        if (n.tagName === 'IMG' && map[n.getAttribute('src')]) {
-          n.setAttribute('src', map[n.getAttribute('src')]);
-        }
-      });
-    });
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-})();
-</script>
+
 
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
