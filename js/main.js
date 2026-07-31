@@ -133,6 +133,13 @@ function initApp() {
   if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
   if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
 
+  // Auto-close drawer when a navigation link inside the drawer is tapped
+  if (drawer) {
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeDrawer);
+    });
+  }
+
   // Swipe right to close mobile drawer
   let touchStartX = 0;
   let touchStartY = 0;

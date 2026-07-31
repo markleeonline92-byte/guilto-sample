@@ -2298,6 +2298,131 @@
 /* ══════════════════════════════════════════════
    RESPONSIVE BREAKPOINTS
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   MOBILE HAMBURGER & NAVIGATION DRAWER STYLES
+══════════════════════════════════════════════ */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 40px;
+  height: 40px;
+  padding: 10px 9px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(216, 155, 40, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(75, 46, 32, 0.08);
+}
+.nav-hamburger:active {
+  transform: scale(0.92);
+}
+.nav-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--text-dark, #2B211B);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+  transform-origin: center;
+}
+.nav-hamburger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.nav-hamburger.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Drawer Overlay Backdrop */
+.nav-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 5, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.nav-drawer-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Mobile Slide-Out Drawer Panel */
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  max-width: 86vw;
+  height: 100vh;
+  height: 100dvh;
+  background: linear-gradient(175deg, #FFFDF8 0%, #F5EDE0 100%);
+  box-shadow: -10px 0 40px rgba(44, 24, 16, 0.25);
+  z-index: 1999;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  overflow-y: auto;
+}
+.nav-drawer.open {
+  transform: translateX(0);
+}
+.nav-drawer-close {
+  align-self: flex-end;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(44, 24, 16, 0.08);
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-dark, #2B211B);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: background 0.2s ease;
+}
+.nav-drawer-close:active {
+  background: rgba(44, 24, 16, 0.18);
+}
+.drawer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.drawer-links a {
+  padding: 14px 18px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-dark, #2B211B);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.drawer-links a:hover,
+.drawer-links a:active {
+  background: rgba(216, 155, 40, 0.15);
+  color: var(--honey-dark, #B87D1A);
+  padding-left: 22px;
+}
+
+/* ══════════════════════════════════════════════
+   MEDIA QUERIES (RESPONSIVE BREAKPOINTS)
+══════════════════════════════════════════════ */
 @media (max-width: 1200px) {
   .benefits-grid { grid-template-columns: repeat(2, 1fr); }
   .products-grid { grid-template-columns: repeat(3, 1fr); }
@@ -2317,14 +2442,32 @@
 }
 
 @media (max-width: 768px) {
+  /* Prevent horizontal page scrolling */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
   /* Hero section compact spacing */
-  #hero { min-height: auto; padding-top: 70px; }
-  .hero-inner { grid-template-columns: 1fr; gap: 24px; padding: 20px 0 32px; }
-  .hero-h1 { font-size: 2.1rem; margin-bottom: 14px; }
-  .hero-badge { margin-bottom: 16px; padding: 6px 14px; font-size: 0.72rem; }
-  .hero-subtitle { margin-bottom: 24px; font-size: 0.95rem; }
-  .hero-trust { margin-top: 24px; gap: 10px; flex-wrap: wrap; }
-  .hero-image-frame img { height: 280px; }
+  #hero { min-height: auto; padding-top: 80px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 24px; padding: 16px 0 32px; text-align: center; }
+  .hero-h1 { font-size: clamp(1.85rem, 6vw, 2.5rem); margin-bottom: 14px; }
+  .hero-badge { margin: 0 auto 16px; padding: 6px 14px; font-size: 0.72rem; }
+  .hero-subtitle { margin: 0 auto 24px; font-size: 0.95rem; max-width: 90%; }
+  .hero-actions { justify-content: center; }
+  .hero-trust { margin-top: 24px; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .hero-image-frame img { height: 260px; max-width: 100%; object-fit: contain; }
+
+  /* Floating badges mobile scaling */
+  .hero-float-badge {
+    transform: scale(0.85);
+    font-size: 0.72rem;
+    padding: 6px 12px;
+  }
+  .badge-top-right { top: -10px; right: -5px; }
+  .badge-bottom-left { bottom: -10px; left: -5px; }
+  .badge-mid-right { display: none; }
 
   /* Compact section headers */
   .ingredients-header,
@@ -2340,41 +2483,41 @@
 
   /* Grid & section layout compact gaps */
   .about-grid { grid-template-columns: 1fr; gap: 24px; }
-  .about-img-main img { height: 300px; }
+  .about-img-main img { height: 280px; }
   .about-img-accent { display: none; }
   .about-stats-row { margin-top: 20px; gap: 12px; }
   .about-stat { padding: 14px; }
   .about-features { margin-top: 20px; gap: 12px; }
 
-  .ingredients-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .ingredient-card { padding: 18px 12px; }
+  .ingredients-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ingredient-card { padding: 16px 10px; }
 
-  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .product-card-image { height: 160px; }
-  .product-card-body { padding: 14px; }
+  .product-card-body { padding: 12px; }
 
-  .benefits-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
-  .benefit-card { padding: 20px 14px; }
-  .benefit-icon-wrap { width: 52px; height: 52px; font-size: 22px; margin-bottom: 12px; }
+  .benefits-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .benefit-card { padding: 18px 12px; }
+  .benefit-icon-wrap { width: 48px; height: 48px; font-size: 20px; margin-bottom: 10px; }
 
   .bestsellers-grid { grid-template-columns: 1fr; gap: 20px; }
   .bs-card-image { height: 220px; }
   .bs-card-body { padding: 20px; }
 
   .giftbox-inner { grid-template-columns: 1fr; gap: 24px; }
-  .giftbox-image-wrap img { max-height: 280px; }
+  .giftbox-image-wrap img { max-height: 260px; }
   .gift-occasions { margin-top: 18px; margin-bottom: 20px; gap: 8px; }
 
   .gift-packs-container { margin-top: 36px; }
   .gift-packs-title { font-size: 1.45rem; margin-bottom: 22px; }
-  .gift-packs-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .gift-packs-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
-  .recipes-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .recipes-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
   .recipe-image { height: 140px; font-size: 3rem; }
-  .recipe-body { padding: 16px; }
+  .recipe-body { padding: 14px; }
 
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .stat-item { padding: 28px 16px; }
+  .stat-item { padding: 24px 12px; }
 
   .contact-grid { grid-template-columns: 1fr; gap: 28px; }
   .contact-info-items { margin-top: 24px; gap: 16px; }
@@ -2401,8 +2544,8 @@
   .filter-btn {
     flex-shrink: 0;
     scroll-snap-align: center;
-    padding: 7px 16px;
-    font-size: 0.76rem;
+    padding: 8px 18px;
+    font-size: 0.82rem;
   }
 
   /* Mobile Swipeable Process Timeline Track */
@@ -2416,31 +2559,65 @@
     width: 140px;
   }
   .process-step-icon { width: 60px; height: 60px; font-size: 22px; margin-bottom: 12px; }
+
+  /* Mobile Cart Drawer Fullscreen Width */
+  #cart-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
 }
 
 @media (max-width: 480px) {
-  .hero-h1 { font-size: 1.75rem; }
-  .hero-actions { flex-direction: column; width: 100%; }
+  #navbar {
+    width: calc(100% - 20px);
+    padding: 8px 14px;
+    top: 10px;
+  }
+  /* Hide desktop header order button on tiny screens to avoid layout overflow */
+  .nav-actions .btn-primary {
+    display: none;
+  }
+
+  .hero-h1 { font-size: 1.7rem; line-height: 1.25; }
+  .hero-actions { flex-direction: column; width: 100%; gap: 10px; }
   .hero-actions .btn { width: 100%; justify-content: center; }
-  .hero-trust { flex-direction: column; gap: 10px; }
+  .hero-trust { flex-direction: column; gap: 8px; }
+
   .products-grid { grid-template-columns: 1fr; gap: 16px; }
+  .product-card-image { height: 200px; }
+  
   .gift-packs-grid { grid-template-columns: 1fr; gap: 16px; }
   .benefits-grid { grid-template-columns: 1fr; gap: 12px; }
   .ingredients-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .recipes-grid { grid-template-columns: 1fr; }
   .masonry-grid { columns: 2; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  
   .newsletter-form { flex-direction: column; border-radius: var(--radius-lg); gap: 8px; }
   .newsletter-btn { border-radius: var(--radius-md); width: 100%; }
   .form-row { grid-template-columns: 1fr; }
   .contact-form-wrap { padding: 20px 14px; }
-  #navbar { width: calc(100% - 20px); padding: 10px 16px; }
+
+  /* Testimonials sizing for mobile */
+  .testi-card {
+    width: calc(100vw - 44px);
+    max-width: 340px;
+    padding: 20px 16px;
+  }
 }
 
 /* ══════════════════════════════════════════════
-   MOBILE TOUCH INTERACTION FEEDBACK
+   MOBILE TOUCH INTERACTION FEEDBACK & ACCESSIBILITY
 ══════════════════════════════════════════════ */
 @media (hover: none) and (pointer: coarse) {
+  /* Hide custom pointer cursor dots on touchscreen devices */
+  #cursor-dot, #cursor-ring {
+    display: none !important;
+  }
+  body {
+    cursor: auto !important;
+  }
+
   .btn:active,
   .filter-btn:active,
   .product-card:active,
@@ -2456,5 +2633,10 @@
     transform: translateY(0);
     opacity: 0.95;
     padding: 10px;
+  }
+  
+  /* Ensure form inputs don't trigger iOS Safari auto-zoom */
+  input, select, textarea {
+    font-size: 16px !important;
   }
 }
